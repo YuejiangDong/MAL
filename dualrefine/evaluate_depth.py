@@ -83,7 +83,11 @@ def evaluate(opt):
         if idx not in frames_to_load:
             frames_to_load.append(idx)
     if opt.eval_cs:
+        opt.data_path = '/home/share/dyj' # '/home/dyj/server93/share/dyj' #'../nas/dataset/cityscapes'  
         opt.eval_split = 'cityscapes'
+        # opt.height=192
+        # opt.width=512
+        print(opt.height, opt.width)
        
     
     if opt.ext_disp_to_eval is None:
@@ -230,9 +234,9 @@ def evaluate(opt):
 
     if opt.eval_split == 'cityscapes':
         print('loading cityscapes gt depths individually due to their combined size!')
-        gt_depths = os.path.join('./splits', opt.eval_split, "gt_depths")
+        gt_depths = os.path.join("../manydepth2_seg/splits", opt.eval_split, "gt_depths")
     else:
-        gt_path = os.path.join('./splits', opt.eval_split, "gt_depths.npz")
+        gt_path = os.path.join('../manydepth2_seg/splits', opt.eval_split, "gt_depths.npz")
         gt_depths = np.load(gt_path, fix_imports=True, encoding='latin1', allow_pickle=True)["data"]
 
     print("-> Evaluating")
