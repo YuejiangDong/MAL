@@ -84,8 +84,6 @@ def evaluate(opt):
             frames_to_load.append(idx)
     if opt.eval_cs:
         opt.eval_split = 'cityscapes'
-        opt.height=192
-        opt.width=512
        
     
     if opt.ext_disp_to_eval is None:
