@@ -3,9 +3,29 @@
 This is the repository for our paper *MAL: Motion-Aware Loss with Temporal and Distillation Hints
 for Self-Supervised Depth Estimation*. MAL is a novel, plug-and-play module designed for seamless integration into multi-frame self-supervised monocular depth estimation methods.
 
+## :seedling: Training
+Preparation of MaskFormer for Segmentation:
+Install detectron2 from https://detectron2.readthedocs.io/en/latest/tutorials/install.html, then:
+```
+cd mask2former/modeling/pixel_decoder/ops
+sh make.sh
+```
 
 
-## :zap: Quick start
+Preparation of ManyDepth pre-trained model:
+Please download pretrained model of ManyDepth for ([KITTI](https://storage.googleapis.com/niantic-lon-static/research/manydepth/models/KITTI_MR.zip) and [CityScapes](https://storage.googleapis.com/niantic-lon-static/research/manydepth/models/CityScapes_MR.zip)), unzip and put them under `./ckpt/` folder. Our training fine-tunes these weights with MAL.
+
+
+Training bash:
+```
+# manydepth + MAL on KITTI
+accelerate launch --multi_gpu -m manydepth.train --step_lr --validate_every 3000 --loss_blc --load_pretrained --temporal --distil
+
+# manydepth + MAL on CityScapes
+accelerate launch --multi_gpu -m manydepth.train --loss_blc --train_cs --distil --temporal --load_pretrained --validate_every 300 --num_epochs 7
+```
+
+## :evergreen_tree: Evaluation
 
 We apply our MAL to three representative self-supervised depth estimation methods to evaluate. We currently provide code for model evaluation in the corresponding directory.
 
@@ -21,8 +41,6 @@ To evaluate a model, run:
 | DualRefine + MAL |   KITTI    | ```python -m dualrefine.evaluate_depth --data_path <your_data_path> --load_weights_folder <model_path> --eval_mono``` |
 | DualRefine + MAL | CityScapes | ```python -m dualrefine.evaluate_depth --data_path <your_data_path> --load_weights_folder <model_path> --eval_mono --eval_cs``` |
 | DynamicDepth + MAL | CityScapes | ```python -m dynamicdepth.train --data_path <your_data_path> --load_weights_folder <model_path> --mono_weights_folder <model_path> --eval_mode``` |
-
-
 
 
 ## :file_folder: Models
